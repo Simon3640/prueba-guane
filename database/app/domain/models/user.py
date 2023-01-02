@@ -1,9 +1,9 @@
 from tortoise.fields import CharField, BooleanField
 
-from .base import BaseCreatedUpdatedAtModel, BaseDBModel
+from .base import BaseCreatedUpdatedAtModel, Base
 
 
-class User(BaseDBModel, BaseCreatedUpdatedAtModel):
+class User(Base, BaseCreatedUpdatedAtModel):
 
     username = CharField(max_length=20, unique=True, null=False)
     email = CharField(max_length=255, unique=True, null=False)

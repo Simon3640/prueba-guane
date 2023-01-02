@@ -1,9 +1,9 @@
-from tortoise import models
-from tortoise import fields
+from tortoise.models import Model
+from tortoise.fields import DatetimeField, BigIntField
 
 
-class BaseDBModel(models.Model):
-    id = fields.BigIntField(pk=True, index=True)
+class Base(Model):
+    id = BigIntField(pk=True, index=True)
 
     async def to_dict(self):
         d = {}
@@ -18,5 +18,5 @@ class BaseDBModel(models.Model):
 
 
 class BaseCreatedUpdatedAtModel:
-    created_at = fields.DatetimeField(auto_now_add=True)
-    updated_at = fields.DatetimeField(auto_now=True)
+    created_at = DatetimeField(auto_now_add=True)
+    updated_at = DatetimeField(auto_now=True)

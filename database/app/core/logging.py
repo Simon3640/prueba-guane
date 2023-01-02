@@ -1,4 +1,5 @@
 import logging
+import sys
 from functools import lru_cache
 
 from .config import get_app_settings
@@ -51,3 +52,16 @@ def get_logging(mod_name: str) -> logging.Logger:
     log.addHandler(handler)
     log.setLevel(settings.logging_level)
     return log
+
+
+def setloggingdb():
+    sh = logging.StreamHandler(sys.stdout)
+    sh.setFormatter(Format())
+
+    logger_db_client = logging.getLogger("db_client")
+    logger_db_client.setLevel(settings.logging_level)
+    logger_db_client.addHandler(sh)
+
+    logger_tortoise = logging.getLogger("tortoise")
+    logger_tortoise.setLevel(settings.logging_level)
+    logger_tortoise.addHandler(sh)

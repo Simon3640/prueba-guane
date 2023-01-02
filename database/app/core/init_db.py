@@ -22,7 +22,6 @@ def get_tortoise_config() -> dict:
 
 def register_db(app: FastAPI, db_url: str = None):
     db_url = db_url or settings.postgres_uri
-    print(db_url)
     register_tortoise(
         app,
         db_url=db_url,

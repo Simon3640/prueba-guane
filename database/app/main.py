@@ -4,6 +4,7 @@ from starlette.middleware.cors import CORSMiddleware
 from app.api.v1.router import api_route
 from app.core.config import get_app_settings
 from app.core.init_db import register_db
+from app.core.logging import setloggingdb
 
 
 def run_app():
@@ -20,6 +21,7 @@ def run_app():
         expose_headers=["*"]
     )
     application.include_router(api_route, prefix=settings.api_prefix_v1)
+    setloggingdb()
     return application
 
 

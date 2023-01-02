@@ -1,6 +1,9 @@
-from fastapi import APIRouter
+from fastapi import APIRouter, Depends
+from tortoise.backends.base.client import BaseDBAsyncClient
 
-from app.models import User
+from app.domain.models import User
+from app.api.middlewares.db import get_db
+from app.services.crud import user
 
 router = APIRouter()
 
@@ -10,5 +13,8 @@ def hello_world():
 
 
 @router.get('/')
-async def get_users():
-    return await User.all()
+async def get_users(
+    *,
+    db: BaseDBAsyncClient = Depends(get_db)
+):
+    return await user.get_multi(db)

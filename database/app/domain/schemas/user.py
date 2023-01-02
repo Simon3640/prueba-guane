@@ -21,7 +21,7 @@ class UserBase(BaseModel):
         max_length=50,
         regex=regex
     )
-    email: EmailStr = Field(max_length=255)
+    email: EmailStr
     is_active: bool = True
     is_superuser: bool = False
 

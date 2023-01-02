@@ -7,7 +7,7 @@ from .base import Base
 
 
 # We create the rules for handle users
-class UserPolicy(Base[User, UserCreate, UserUpdate]):
+class UserRules(Base[User, UserCreate, UserUpdate]):
     def __init__(self) -> None:
         pass
     

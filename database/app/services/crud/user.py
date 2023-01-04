@@ -5,7 +5,7 @@ from tortoise.backends.base.client import BaseDBAsyncClient
 from app.core.logging import get_logging
 from app.domain.schemas import UserCreate, UserUpdate
 from app.domain.models import User
-from app.domain.errors.user import user_diferent_password
+from app.domain.errors.user import user_diferent_password, user_registered
 from app.domain.rules import UserRules
 from .base import CRUDBase
 from app.services.security import bcrypt
@@ -35,20 +35,19 @@ class CRUDUser(CRUDBase[User, UserCreate, UserUpdate, UserRules]):
         self, db: BaseDBAsyncClient, username: str
     ) -> User:
         username = username.upper()
-        obj_db = User.filter(username=username).using_db(_db=db).first()
+        obj_db = await User.filter(username=username).using_db(_db=db).first()
         return obj_db
 
     # This method help us to get all user in platform
     async def get_multi(
         self,
         db: BaseDBAsyncClient,
-        who: User,
         *,
         skip: int = 0,
         limit: int = 100,
         active: bool = True,
     ) -> list[User]:
-        self.rules.get_multi(who=who)
+        self.rules.get_multi()
         objs_db = await (
             User.all(using_db=db)
             .filter(is_active=active)
@@ -58,36 +57,38 @@ class CRUDUser(CRUDBase[User, UserCreate, UserUpdate, UserRules]):
         )
         return objs_db
 
-    # No debe ser expuesta en ningún momento, se hace para uso interno de la aplicación
-
     async def create(
         self,
         db: BaseDBAsyncClient,
         obj_in: UserCreate
     ) -> User:
-        user: User = self.get_by_username(
-            db, username=obj_in.username) or self.get_by_email(db=db, email=obj_in.email)
+        user: User = await self.get_by_username(
+            db, username=obj_in.username) or await self.get_by_email(db=db, email=obj_in.email)
         self.rules.create(to=user)
         hashed_password = bcrypt.get_password_hash(obj_in.password)
         data = dict(obj_in)
         del data['password']
         data['hashed_password'] = hashed_password
-        db_obj = User.create(using_db=db, **data)
+        db_obj = await User.create(using_db=db, **data)
         return db_obj
 
     async def update(
         self,
         db: BaseDBAsyncClient,
-        who: User,
         *,
         db_obj: User,
         obj_in: UserUpdate | dict[str, Any]
     ) -> User:
+        user: User = await self.get_by_username(
+            db, username=obj_in.username) or await self.get_by_email(db=db, email=obj_in.email)
+        if user and (user.id != db_obj.id):
+            raise user_registered
         if isinstance(obj_in, dict):
             update_data = obj_in
         else:
             update_data = obj_in.dict(exclude_unset=True)
-        return await super().update(db, db_obj=db_obj, who=who, obj_in=update_data)
+        db_obj = await super().update(db, db_obj=db_obj, obj_in=update_data)
+        return db_obj
 
     async def update_password(
         self,
@@ -120,4 +121,5 @@ class CRUDUser(CRUDBase[User, UserCreate, UserUpdate, UserRules]):
         return user
 
 
-user = CRUDUser(User, UserRules)
+rules = UserRules()
+user = CRUDUser(User, rules)

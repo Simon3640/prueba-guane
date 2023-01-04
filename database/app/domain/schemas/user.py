@@ -9,7 +9,7 @@ class UserBase(BaseModel):
     username: str = Field(
         min_length=3,
         max_length=20,
-        regex=regex
+        regex="^[A-Za-z0-9ÁÉÍÓÚáéíóúñÑ ]*$"
     )
     names: str = Field(
         min_length=3,
@@ -36,7 +36,9 @@ class UserCreate(UserBase):
 
 
 class UserUpdate(UserBase):
-    pass
+    @validator('username', 'names', 'last_names', 'email')
+    def convert_upper(cls, value):
+        return value.upper()
 
 
 class UserInDBBase(UserBase):

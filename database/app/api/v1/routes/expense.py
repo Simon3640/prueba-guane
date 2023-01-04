@@ -1,11 +1,11 @@
 from fastapi import APIRouter, Depends, HTTPException, Header
 from tortoise.backends.base.client import BaseDBAsyncClient
 
-from app.api.middlewares import db, user
-from app.domain.schemas import ExpenseCreate, ExpenseInDB, ExpenseUpdate, ExpenseCreateBase, Msg
+from app.domain.schemas import ExpenseCreate, ExpenseInDB, ExpenseUpdate, Msg
 from app.domain.models import Expense, User
 from app.domain.errors.base import BaseErrors
 from app.services import crud
+from app.api.middlewares import db, user
 
 
 router = APIRouter()
@@ -13,16 +13,14 @@ router = APIRouter()
 
 @router.post('/', response_model=ExpenseInDB)
 async def create_expense(
-    expense: ExpenseCreateBase,
+    expense: ExpenseCreate,
     *,
     user_id: int = Header(),
     db: BaseDBAsyncClient = Depends(db.get_db),
     current_user: User = Depends(user.get_current_user)
 ) -> ExpenseInDB:
     try:
-        obj_in = ExpenseCreate(
-            **expense.dict(exclude_none=True), user_id=current_user.id)
-        expense = await crud.expense.create(db, current_user, obj_in=obj_in)
+        expense = await crud.expense.create(db, current_user, obj_in=expense)
     except BaseErrors as e:
         raise HTTPException(e.code, e.detail)
     return expense

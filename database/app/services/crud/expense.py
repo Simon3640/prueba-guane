@@ -7,7 +7,14 @@ from .base import CRUDBase
 
 
 class CRUDExpense(CRUDBase[Expense, ExpenseCreate, ExpenseUpdate, ExpenseRules]):
-    async def get_multi(self, db: BaseDBAsyncClient, who: User, *, skip: int = 0, limit: int = 100) -> list[Expense]:
+    async def get_multi(
+        self,
+        db: BaseDBAsyncClient,
+        who: User,
+        *,
+        skip: int = 0,
+        limit: int = 100
+    ) -> list[Expense]:
         expenses = Expense.all().using_db(_db=db)
         if not who.is_superuser:
             expenses = expenses.filter(user_id=who.id)

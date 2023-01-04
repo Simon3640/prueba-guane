@@ -1,8 +1,9 @@
 from tortoise.fields import (
-    CharField, FloatField, DatetimeField, ForeignKeyRelation, ForeignKeyField, CASCADE)
+    CharField, FloatField, DatetimeField, ForeignKeyRelation, ForeignKeyField)
 
 from .base import BaseCreatedUpdatedAtModel, Base
 from .user import User
+from .expense_category import ExpenseCategory
 
 
 class Expense(Base, BaseCreatedUpdatedAtModel):
@@ -10,5 +11,5 @@ class Expense(Base, BaseCreatedUpdatedAtModel):
     value = FloatField(null=False)
     payment_date = DatetimeField(null=False)
 
-    user: ForeignKeyRelation[User] = ForeignKeyField(
-        'models.User', on_delete=CASCADE, related_name='expenses', to_field='id')
+    category: ForeignKeyRelation[ExpenseCategory] = ForeignKeyRelation(
+        'models.ExpenseCategory', related_name='expenses', to_field='id')

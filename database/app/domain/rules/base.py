@@ -1,7 +1,7 @@
 from typing import Type, TypeVar, Generic, Union, Dict, Any
 from pydantic import BaseModel
 
-from app.domain.models import base
+from app.domain.models import base, User
 
 ModelType = TypeVar("ModelType", bound=base.Base)
 CreateSchemaType = TypeVar("CreateSchemaType", bound=BaseModel)
@@ -13,21 +13,23 @@ class Base(Generic[ModelType, CreateSchemaType, UpdateSchemaType]):
     def __init__(self) -> None:
         pass
 
-    def get(self, to: Type[ModelType]) -> None:
+    def get(self, *, who: User, to: Type[ModelType]) -> None:
         pass
 
-    def get_multi(self) -> None:
+    def get_multi(self, *, who: User) -> None:
         pass
 
-    def create(self, to: Type[CreateSchemaType]) -> None:
+    def create(self, *, who: User, to: Type[CreateSchemaType]) -> None:
         pass
 
     def update(
         self,
+        *,
+        who: User,
         to: Type[ModelType],
         obj_in: Union[UpdateSchemaType, Dict[str, Any]]
     ) -> None:
         pass
 
-    def delete(self, to: Type[ModelType]) -> None:
+    def delete(self, *, who: User, to: Type[ModelType]) -> None:
         pass

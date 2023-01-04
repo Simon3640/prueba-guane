@@ -42,12 +42,13 @@ class CRUDUser(CRUDBase[User, UserCreate, UserUpdate, UserRules]):
     async def get_multi(
         self,
         db: BaseDBAsyncClient,
+        who: User,
         *,
         skip: int = 0,
         limit: int = 100,
         active: bool = True,
     ) -> list[User]:
-        self.rules.get_multi()
+        self.rules.get_multi(who=who)
         objs_db = await (
             User.all(using_db=db)
             .filter(is_active=active)
@@ -60,6 +61,7 @@ class CRUDUser(CRUDBase[User, UserCreate, UserUpdate, UserRules]):
     async def create(
         self,
         db: BaseDBAsyncClient,
+        *,
         obj_in: UserCreate
     ) -> User:
         user: User = await self.get_by_username(
@@ -75,6 +77,7 @@ class CRUDUser(CRUDBase[User, UserCreate, UserUpdate, UserRules]):
     async def update(
         self,
         db: BaseDBAsyncClient,
+        who: User,
         *,
         db_obj: User,
         obj_in: UserUpdate | dict[str, Any]
@@ -87,16 +90,17 @@ class CRUDUser(CRUDBase[User, UserCreate, UserUpdate, UserRules]):
             update_data = obj_in
         else:
             update_data = obj_in.dict(exclude_unset=True)
-        db_obj = await super().update(db, db_obj=db_obj, obj_in=update_data)
+        db_obj = await super().update(db, who, db_obj=db_obj, obj_in=update_data)
         return db_obj
 
     async def update_password(
         self,
         db: BaseDBAsyncClient,
+        who: User,
+        *,
         password: str,
         confirmPassword: str,
         db_obj: User,
-        who: User
     ) -> User:
         self.rules.update_password(
             who=who, to=db_obj, password=password, confirmpassword=confirmPassword

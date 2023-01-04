@@ -21,29 +21,31 @@ class CRUDBase(Generic[ModelType, CreateSchemaType, UpdateSchemaType, Rules]):
         self.model = model
         self.rules = rules
 
-    async def get(self, db: BaseDBAsyncClient, *, id: int) -> ModelType | None:
+    async def get(self, db: BaseDBAsyncClient, who: User, *, id: int) -> ModelType | None:
         obj_db = await self.model.filter(id=id).using_db(_db=db).first()
-        self.rules.get( to=obj_db)
+        self.rules.get(who=who, to=obj_db)
         return obj_db
 
     async def get_multi(
         self,
         db: BaseDBAsyncClient,
+        who: User,
         *,
         skip: int = 0,
         limit: int = 100
     ) -> list[ModelType]:
         objs_db = await self.model.all(using_db=db).offset(skip).limit(limit).all()
-        self.rules.get_multi()
+        self.rules.get_multi(who=who)
         return objs_db
 
     async def create(
         self,
         db: BaseDBAsyncClient,
+        who: User,
         *,
         obj_in: CreateSchemaType
     ) -> ModelType:
-        self.rules.create(to=obj_in)
+        self.rules.create(who=who, to=obj_in)
         # We ignore types
         obj_in_data = dict(obj_in)
         db_obj = await self.model.create(using_db=db, **obj_in_data)
@@ -52,11 +54,12 @@ class CRUDBase(Generic[ModelType, CreateSchemaType, UpdateSchemaType, Rules]):
     async def update(
         self,
         db: BaseDBAsyncClient,
+        who: User,
         *,
         db_obj: ModelType,
         obj_in: UpdateSchemaType
     ) -> ModelType:
-        self.rules.update(to=db_obj, obj_in=obj_in)
+        self.rules.update(who=who, to=db_obj, obj_in=obj_in)
         obj_data = db_obj.__dict__
         if isinstance(obj_in, dict):
             update_data = obj_in
@@ -70,8 +73,8 @@ class CRUDBase(Generic[ModelType, CreateSchemaType, UpdateSchemaType, Rules]):
         db_obj = await self.model.get(id=db_obj.id)
         return db_obj
 
-    async def delete(self, db: BaseDBAsyncClient, *, id: int) -> bool:
+    async def delete(self, db: BaseDBAsyncClient, who: User, *, id: int) -> bool:
         obj_db = await self.model.filter(id=id).using_db(_db=db).first()
-        self.rules.delete(to=obj_db)
+        self.rules.delete(who=who, to=obj_db)
         await obj_db.delete(using_db=db)
         return True

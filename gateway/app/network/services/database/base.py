@@ -31,7 +31,8 @@ class ServiceBase(Generic[CreateSchemaType, UpdateSchemaType]):
             url = self.url + path if path else self.url
             async with session.post(
                     url,
-                    json=loads(data.json(exclude_unset=True, exclude_none=True)),
+                    json=loads(
+                        data.json(exclude_unset=True, exclude_none=True)),
                     headers=headers) as response:
                 data = await response.json()
                 log.debug(data)
@@ -56,13 +57,16 @@ class ServiceBase(Generic[CreateSchemaType, UpdateSchemaType]):
         session: ClientSession,
         *,
         path: str | None = None,
-        headers: dict | None = None
+        headers: dict | None = None,
+        skip: int = 0,
+        limit: int = 100
     ):
         url = self.url + path if path else self.url
         with timeout(settings.gateway_timeout):
             async with session.get(
-                url,
-                headers=headers) as response:
+                    url,
+                    headers=headers,
+                    params={'skip': str(skip), 'limit': str(limit)}) as response:
                 data = await response.json()
                 return (data, response.status)
 
@@ -76,9 +80,10 @@ class ServiceBase(Generic[CreateSchemaType, UpdateSchemaType]):
     ):
         with timeout(settings.gateway_timeout):
             async with session.put(
-                self.url + str(id),
-                json=loads(data.json(exclude_unset=True, exclude_none=True)),
-                headers=headers) as response:
+                    self.url + str(id),
+                    json=loads(
+                        data.json(exclude_unset=True, exclude_none=True)),
+                    headers=headers) as response:
                 data = await response.json()
                 return (data, response.status)
 
@@ -91,7 +96,7 @@ class ServiceBase(Generic[CreateSchemaType, UpdateSchemaType]):
     ):
         with timeout(settings.gateway_timeout):
             async with session.delete(
-                self.url + str(id),
-                headers=headers) as response:
+                    self.url + str(id),
+                    headers=headers) as response:
                 data = await response.json()
                 return (data, response.status)

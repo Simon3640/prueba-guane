@@ -64,11 +64,16 @@ async def get_expense(
 async def get_expenses(
     *,
     session: ClientSession = Depends(http.get_session),
-    user_id: int = Depends(jwt_bearer.get_user_id)
+    user_id: int = Depends(jwt_bearer.get_user_id),
+    skip: int = 0,
+    limit: int = 100
 ):
     try:
         expense, code = await database.expense_service.get_multi(session,
-                                                                 headers={'user-id': str(user_id)})
+                                                                 headers={
+                                                                     'user-id': str(user_id)},
+                                                                 skip=skip,
+                                                                 limit=limit)
     except ClientConnectorError:
         raise HTTPException(
             status_code=503,
@@ -94,7 +99,8 @@ async def update_expense(
 ):
     try:
         expense, code = await database.expense_service.put(session, data=expense, id=id,
-                                                           headers={'user-id': str(user_id)})
+                                                           headers={
+                                                               'user-id': str(user_id)})
     except ClientConnectorError:
         raise HTTPException(
             status_code=503,

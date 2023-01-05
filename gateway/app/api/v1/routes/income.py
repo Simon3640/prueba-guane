@@ -19,7 +19,7 @@ async def create_income(
 ):
     try:
         income, code = await database.income_service.post(session, data=income,
-                                                            headers={'user-id': str(user_id)})
+                                                          headers={'user-id': str(user_id)})
     except ClientConnectorError:
         raise HTTPException(
             status_code=503,
@@ -44,7 +44,7 @@ async def get_income(
 ):
     try:
         income, code = await database.income_service.get(session, id=id,
-                                                           headers={'user-id': str(user_id)})
+                                                         headers={'user-id': str(user_id)})
     except ClientConnectorError:
         raise HTTPException(
             status_code=503,
@@ -64,11 +64,16 @@ async def get_income(
 async def get_incomes(
     *,
     session: ClientSession = Depends(http.get_session),
-    user_id: int = Depends(jwt_bearer.get_user_id)
+    user_id: int = Depends(jwt_bearer.get_user_id),
+    skip: int = 0,
+    limit: int = 100
 ):
     try:
         income, code = await database.income_service.get_multi(session,
-                                                                 headers={'user-id': str(user_id)})
+                                                               headers={
+                                                                   'user-id': str(user_id)},
+                                                               skip=skip,
+                                                               limit=limit)
     except ClientConnectorError:
         raise HTTPException(
             status_code=503,
@@ -94,7 +99,7 @@ async def update_income(
 ):
     try:
         income, code = await database.income_service.put(session, data=income, id=id,
-                                                           headers={'user-id': str(user_id)})
+                                                         headers={'user-id': str(user_id)})
     except ClientConnectorError:
         raise HTTPException(
             status_code=503,
@@ -119,7 +124,7 @@ async def delete_income(
 ):
     try:
         income, code = await database.income_service.delete(session, id=id,
-                                                              headers={'user-id': str(user_id)})
+                                                            headers={'user-id': str(user_id)})
     except ClientConnectorError:
         raise HTTPException(
             status_code=503,

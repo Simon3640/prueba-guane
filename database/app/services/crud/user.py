@@ -114,14 +114,14 @@ class CRUDUser(CRUDBase[User, UserCreate, UserUpdate, UserRules]):
         self,
         db: BaseDBAsyncClient,
         *,
-        username: str = None,
+        username: str,
         password: str
     ) -> User:
         user: User = await self.get_by_email(db, username) or await self.get_by_username(
             db, username)
+        self.rules.authenticate(who=user)
         if not bcrypt.check_password(password, user.hashed_password):
             raise user_diferent_password
-        self.rules.authenticate(who=user)
         return user
 
 

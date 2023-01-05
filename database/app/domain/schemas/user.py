@@ -53,5 +53,6 @@ class UserInDBBase(UserBase):
 class UserInDB(UserInDBBase):
     hashed_password: SecretStr
 
+
 class UserResponse(UserInDBBase):
     pass

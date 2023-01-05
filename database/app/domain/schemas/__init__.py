@@ -12,3 +12,4 @@ from .income_category import (IncomeCategoryCreate,
                               IncomeCategoryResponse,
                               IncomeCategoryUpdate,
                               IncomeCategoryCreateBase)
+from .auth import UserLogin

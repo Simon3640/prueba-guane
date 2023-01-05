@@ -44,7 +44,7 @@ class UserRules(Base[User, UserCreate, UserUpdate]):
     # rule for authenticate user, if is inactive raise error
     def authenticate(self, *, who: User) -> None:
         if not who:
-            raise user_404
+            raise user_diferent_password
         if not who.is_active:
             raise user_inactive
         return None

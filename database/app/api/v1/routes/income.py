@@ -1,8 +1,8 @@
 from fastapi import APIRouter, Depends, HTTPException, Header
 from tortoise.backends.base.client import BaseDBAsyncClient
 
-from app.domain.schemas import ExpenseCreate, ExpenseInDB, ExpenseUpdate, Msg
-from app.domain.models import Expense, User
+from app.domain.schemas import IncomeCreate, IncomeInDB, IncomeUpdate, Msg
+from app.domain.models import Income, User
 from app.domain.errors.base import BaseErrors
 from app.services import crud
 from app.api.middlewares import db, user
@@ -11,72 +11,72 @@ from app.api.middlewares import db, user
 router = APIRouter()
 
 
-@router.post('/', response_model=ExpenseInDB)
-async def create_expense(
-    expense: ExpenseCreate,
+@router.post('/', response_model=IncomeInDB)
+async def create_Income(
+    income: IncomeCreate,
     *,
     user_id: int = Header(),
     db: BaseDBAsyncClient = Depends(db.get_db),
     current_user: User = Depends(user.get_current_user)
-) -> ExpenseInDB:
+) -> IncomeInDB:
     try:
-        expense = await crud.expense.create(db, current_user, obj_in=expense)
+        income = await crud.income.create(db, current_user, obj_in=income)
     except BaseErrors as e:
         raise HTTPException(e.code, e.detail)
-    return expense
+    return income
 
 
-@router.get('/', response_model=list[ExpenseInDB])
-async def get_expenses(
+@router.get('/', response_model=list[IncomeInDB])
+async def get_Incomes(
     *,
     user_id: int = Header(),
     db: BaseDBAsyncClient = Depends(db.get_db),
     current_user: User = Depends(user.get_current_user),
     skip: int = 0,
     limit: int = 100,
-) -> list[ExpenseInDB]:
+) -> list[IncomeInDB]:
     try:
-        expenses = await crud.expense.get_multi(db, current_user, skip=skip, limit=limit)
+        incomes = await crud.income.get_multi(db, current_user, skip=skip, limit=limit)
     except BaseErrors as e:
         raise HTTPException(e.code, e.detail)
-    return expenses
+    return incomes
 
 
-@router.get('/{id}', response_model=ExpenseInDB)
-async def get_expense(
+@router.get('/{id}', response_model=IncomeInDB)
+async def get_Income(
     id: int,
     *,
     user_id: int = Header(),
     db: BaseDBAsyncClient = Depends(db.get_db),
     current_user: User = Depends(user.get_current_user),
-) -> ExpenseInDB:
+) -> IncomeInDB:
     try:
-        expense = await crud.expense.get(db, current_user, id=id)
+        income = await crud.income.get(db, current_user, id=id)
     except BaseErrors as e:
         raise HTTPException(e.code, e.detail)
-    return expense
+    return income
 
 
-@router.put('/{id}', response_model=ExpenseInDB)
-async def update_expense(
+@router.put('/{id}', response_model=IncomeInDB)
+async def update_Income(
     id: int,
-    expense: ExpenseUpdate,
+    income: IncomeUpdate,
     *,
     user_id: int = Header(),
     db: BaseDBAsyncClient = Depends(db.get_db),
     current_user: User = Depends(user.get_current_user),
-) -> ExpenseInDB:
+) -> IncomeInDB:
     try:
-        db_obj = await crud.expense.get(db, current_user, id=id)
-        expense = await crud.expense.update(db, current_user,
-                                            db_obj=db_obj, obj_in=expense)
+        db_obj = await crud.income.get(db, current_user, id=id)
+        income = await crud.income.update(db, current_user,
+                                            db_obj=db_obj, obj_in=income)
     except BaseErrors as e:
         raise HTTPException(e.detail, e.code)
-    return expense
+    return income
 
 
 @router.delete('/{id}', response_model=Msg)
-async def delete_expense(
+async def delete_Income(
     id: int,
     *,
     user_id: int = Header(),
@@ -85,8 +85,8 @@ async def delete_expense(
 ) -> Msg:
     try:
         # Execute get Rule
-        expense = await crud.expense.get(db, current_user, id=id)
-        expense = await crud.expense.delete(db, current_user, id=id)
+        income = await crud.income.get(db, current_user, id=id)
+        income = await crud.income.delete(db, current_user, id=income.id)
     except BaseErrors as e:
         raise HTTPException(e.detail, e.code)
     return {'msg': 'El gasto ha sido eliminado'}

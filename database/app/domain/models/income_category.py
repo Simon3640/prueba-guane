@@ -6,13 +6,12 @@ from .base import BaseCreatedUpdatedAtModel, Base
 from .user import User
 
 if TYPE_CHECKING:
-    from .expense import Expense
+    from .income import Income
 
 
-class ExpenseCategory(Base, BaseCreatedUpdatedAtModel):
+class IncomeCategory(Base, BaseCreatedUpdatedAtModel):
     name = CharField(max_length=50, null=False)
-    budget = FloatField(null=True)
 
     user: ForeignKeyRelation[User] = ForeignKeyRelation(
-        'models.User', related_name='expense_categories', to_field='id')
-    expenses: ReverseRelation["Expense"]
+        'models.User', related_name='income_categories', to_field='id')
+    incomes: ReverseRelation["Income"]

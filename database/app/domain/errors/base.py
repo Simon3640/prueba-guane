@@ -3,3 +3,4 @@ class BaseErrors(Exception):
         self.code = code
         self.detail = detail
 
+_404 = BaseErrors(code=404, detail='Not found')

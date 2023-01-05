@@ -9,6 +9,7 @@ from .base import CRUDBase
 class CRUDExpenseCategory(CRUDBase[ExpenseCategory, ExpenseCategoryCreate, ExpenseCategoryUpdate, ExpenseCategoryRules]):
     async def get(self, db: BaseDBAsyncClient, who: User, *, id: int) -> ExpenseCategoryResponse | None:
         category = await ExpenseCategory.filter(id=id).using_db(_db=db).first().prefetch_related('expenses')
+        self.rules.get(who=who, to=category)
         expenses = await category.expenses.all().using_db(db)
         return ExpenseCategoryResponse(**category.__dict__, expenses=expenses)
 

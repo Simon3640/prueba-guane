@@ -1,8 +1,7 @@
-from tortoise.fields import (
-    CharField, FloatField, DatetimeField, ForeignKeyRelation, ForeignKeyField)
+from tortoise.fields import (CharField,
+                             FloatField, DatetimeField, ForeignKeyRelation)
 
 from .base import BaseCreatedUpdatedAtModel, Base
-from .user import User
 from .expense_category import ExpenseCategory
 
 

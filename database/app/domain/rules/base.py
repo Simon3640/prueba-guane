@@ -2,6 +2,7 @@ from typing import Type, TypeVar, Generic, Union, Dict, Any
 from pydantic import BaseModel
 
 from app.domain.models import base, User
+from app.domain.errors.base import _404
 
 ModelType = TypeVar("ModelType", bound=base.Base)
 CreateSchemaType = TypeVar("CreateSchemaType", bound=BaseModel)
@@ -14,7 +15,8 @@ class Base(Generic[ModelType, CreateSchemaType, UpdateSchemaType]):
         pass
 
     def get(self, *, who: User, to: Type[ModelType]) -> None:
-        pass
+        if to is None:
+            raise _404
 
     def get_multi(self, *, who: User) -> None:
         pass

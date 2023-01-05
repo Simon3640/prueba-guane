@@ -8,6 +8,7 @@ from .expense import ExpenseInDB
 
 class ExpenseCategoryBase(BaseModel):
     name: str
+    budget: float | None
 
 
 class ExpenseCategoryCreateBase(ExpenseCategoryBase):
@@ -30,7 +31,7 @@ class ExpenseCategoryInDB(ExpenseCategoryCreate):
     updated_at: datetime
 
     class Config:
-        orm_mode=True
+        orm_mode = True
 
 
 class ExpenseCategoryResponse(ExpenseCategoryInDB):

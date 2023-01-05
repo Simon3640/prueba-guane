@@ -6,3 +6,9 @@ from .expense_category import (ExpenseCategoryCreate,
                                ExpenseCategoryInDB,
                                ExpenseCategoryUpdate,
                                ExpenseCategoryResponse)
+from .income import IncomeCreate, IncomeUpdate, IncomeInDB
+from .income_category import (IncomeCategoryCreate,
+                              IncomeCategoryInDB,
+                              IncomeCategoryResponse,
+                              IncomeCategoryUpdate,
+                              IncomeCategoryCreateBase)

@@ -1,4 +1,5 @@
 from typing import Generic, TypeVar, Type
+from json import loads
 
 from aiohttp import ClientSession
 from async_timeout import timeout
@@ -30,7 +31,7 @@ class ServiceBase(Generic[CreateSchemaType, UpdateSchemaType]):
             url = self.url + path if path else self.url
             async with session.post(
                     url,
-                    json=data.dict(exclude_unset=True, exclude_none=True),
+                    json=loads(data.json(exclude_unset=True, exclude_none=True)),
                     headers=headers) as response:
                 data = await response.json()
                 log.debug(data)
@@ -76,7 +77,7 @@ class ServiceBase(Generic[CreateSchemaType, UpdateSchemaType]):
         with timeout(settings.gateway_timeout):
             async with session.put(
                 self.url + str(id),
-                json=data.dict(exclude_unset=True, exclude_none=True),
+                json=loads(data.json(exclude_unset=True, exclude_none=True)),
                 headers=headers) as response:
                 data = await response.json()
                 return (data, response.status)

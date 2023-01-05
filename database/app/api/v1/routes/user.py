@@ -68,7 +68,7 @@ async def update_user(
     current_user: User = Depends(user.get_current_user),
 ) -> UserResponse:
     try:
-        db_obj = await crud.user.get(db, id=id)
+        db_obj = await crud.user.get(db, current_user, id=id)
         user_updated = await crud.user.update(db, current_user, obj_in=user, db_obj=db_obj)
         log.debug(user_updated)
     except BaseErrors as e:

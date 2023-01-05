@@ -9,8 +9,11 @@ readme = "README.md"
 python = "^3.10"
 fastapi = "^0.88.0"
 gunicorn = "^20.1.0"
-pydantic = "^1.10.2"
+pydantic = {extras = ["dotenv", "email"], version = "^1.10.4"}
 httpx = "^0.23.1"
+aiohttp = {extras = ["async-timeout"], version = "^3.8.3"}
+python-jose = {extras = ["cryptography"], version = "^3.3.0"}
+python-multipart = "^0.0.5"
 
 
 [tool.poetry.group.dev.dependencies]

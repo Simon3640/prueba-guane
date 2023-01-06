@@ -1,0 +1,90 @@
+version: '3'
+
+networks:
+  local-net:
+    driver: bridge
+
+services:
+  db:
+    container_name: '${POSTGRES_SERVER}'
+    image: postgres:latest
+    ports:
+      - '5432:5432'
+    env_file:
+      - .env
+    environment:
+      - PGDATA=/var/lib/postgresql/data/pgdata
+    networks:
+      - local-net
+    volumes:
+      - ./db/postgres-data:/var/lib/postgresql/data
+  
+  redis:
+    container_name: '${REDIS_SERVER}'
+    image: redis:latest
+    networks:
+      - local-net
+    env_file:
+      - .env
+
+  database:
+    container_name: '${DATABASE_SVC}'
+    build: ./database
+    command: uvicorn 
+      app.main:app 
+      --host=0.0.0.0
+      --port ${DATABASE_PORT}
+      --reload
+    depends_on:
+      - db
+    env_file:
+      - .env
+    networks:
+      - local-net
+  
+  notifications:
+    container_name: '${NOTIFICATIONS_SVC}'
+    image: simon3640/guane-notifications
+    command: uvicorn 
+      app.main:app 
+      --host=0.0.0.0
+      --port ${NOTIFICATIONS_PORT}
+      --reload
+    env_file:
+      - .env
+    networks:
+      - local-net
+    
+  
+  celery_worker:
+    build:
+      context: ./notifications
+    command: celery -A app.core.celery_worker.celery worker --loglevel=info
+    env_file:
+      - .env
+    environment:
+      - CELERY_BROKER_URL=redis://redis:6379/0
+      - CELERY_RESULT_BACKEND=redis://redis:6379/0
+    depends_on:
+      - redis
+      - notifications
+    networks:
+      - local-net
+  
+  gateway:
+    build: ./gateway
+    command: uvicorn 
+      app.main:app 
+      --host=0.0.0.0
+      --port ${GATEWAY_PORT}
+      --reload
+    env_file:
+      - .env
+    networks:
+      - local-net
+    depends_on:
+      - database
+      - notifications
+    ports:
+      - 8000:${GATEWAY_PORT}
+  

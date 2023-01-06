@@ -14,12 +14,12 @@ async def calcule_expenses(session: ClientSession, *, id: int, headers: dict) ->
     sleep(0.1)
     category, code = await expense_category_service.get(session, id=id, headers=headers)
 
-    if code != 202:
+    if code != 200:
         return None
 
     expenses = category['expenses']
     total = sum(map(lambda x: x['value'], expenses))
-
+    log.debug(total)
     if total >= category['budget'] * 0.9:
         sleep(0.1)
         user, code = await user_service.get(session,

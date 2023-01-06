@@ -11,7 +11,7 @@ settings = get_app_settings()
 
 # Este solo se utiliza para fast api en la documentación automatica como ayuda
 reusable_oauth2 = OAuth2PasswordBearer(
-    tokenUrl=f"http://localhost:8001{settings.api_prefix_v1}/auth/access-token"
+    tokenUrl=f"{settings.api_prefix_v1}/auth/access-token"
 )
 
 

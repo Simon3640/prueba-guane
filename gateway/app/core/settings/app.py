@@ -25,11 +25,19 @@ class AppSettings(BaseAppSettings):
     algorithm: str
 
     # Services
+    database_port: int
     database_svc: str
+    notifications_port: int
     notifications_svc: str
-    @validator('database_svc', 'notifications_svc')
-    def get_api_url(cls, v, values):
-        return v + '/api/v1/'
+    gateway_port: int
+
+    @validator('database_svc', pre=True)
+    def get_database_url(cls, v, values):
+        return f'http://{v}:{values.get("database_port")}/api/v1/'
+    
+    @validator('notifications_svc', pre=True)
+    def get_notifications_url(cls, v, values):
+        return f'http://{v}:{values.get("notifications_port")}/api/v1/'
 
     # TimeOut
     gateway_timeout: float

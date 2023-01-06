@@ -1,0 +1,26 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: celery-deployment
+  labels:
+    app: celery
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: celery
+  template:
+    metadata:
+      labels:
+        app: celery
+    spec:
+      containers:
+        - name: celery
+          image: simon3640/guane-notifications
+          command: 
+            - celery
+          args: 
+            - -A
+            - app.core.celery_worker.celery
+            - worker
+            - --loglevel=info

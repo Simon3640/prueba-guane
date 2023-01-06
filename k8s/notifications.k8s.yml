@@ -1,0 +1,26 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: notifications
+  labels:
+    app: notifications
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: notifications
+  template:
+    metadata:
+      labels:
+        app: notifications
+    spec:
+      containers:
+        - name: notifications
+          image: simon3640/guane-notifications
+          command: 
+            - uvicorn
+          args: 
+            - app.main:app
+            - --host=0.0.0.0
+            - --port=8002
+            - --reload

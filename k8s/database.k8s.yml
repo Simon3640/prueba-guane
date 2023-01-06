@@ -1,0 +1,29 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: database
+  labels:
+    app: database
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: database
+  template:
+    metadata:
+      labels:
+        app: database
+    spec:
+      containers:
+        - name: database
+          image: simon3640/guane-database
+          command: 
+            - uvicorn
+          args: 
+            - app.main:app
+            - --host=0.0.0.0
+            - --port=8001
+            - --reload
+          envFrom:
+          - secretRef:
+              name: env

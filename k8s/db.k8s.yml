@@ -20,3 +20,14 @@ spec:
           envFrom:
           - secretRef:
               name: env
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: db
+spec:
+  selector:
+    app: db
+  ports:
+  - port: 5432
+    targetPort: 5432

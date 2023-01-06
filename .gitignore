@@ -104,7 +104,6 @@ celery-data/
 *.sage.py
 
 # Environments
-.env
 .venv
 prod.env
 env/

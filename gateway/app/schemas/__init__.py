@@ -14,3 +14,4 @@ from .income_category import (IncomeCategoryCreate,
                               IncomeCategoryCreateBase)
 from .auth import UserLogin
 from .token import TokenPayload, Token
+from .notification import NotificationEmail

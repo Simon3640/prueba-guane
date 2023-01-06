@@ -26,7 +26,8 @@ class AppSettings(BaseAppSettings):
 
     # Services
     database_svc: str
-    @validator('database_svc')
+    notifications_svc: str
+    @validator('database_svc', 'notifications_svc')
     def get_api_url(cls, v, values):
         return v + '/api/v1/'
 

@@ -1,10 +1,11 @@
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, BackgroundTasks
 from fastapi.responses import JSONResponse
 from aiohttp import ClientSession
 from aiohttp.client_exceptions import ClientConnectorError, ContentTypeError
 
 from app.schemas import ExpenseCreate, ExpenseUpdate
 from app.network.services import database
+from app.services.utils import calcule_expenses
 from app.api.middlewares import http, jwt_bearer
 
 router = APIRouter()
@@ -15,11 +16,13 @@ async def create_expense(
     expense: ExpenseCreate,
     *,
     session: ClientSession = Depends(http.get_session),
-    user_id: int = Depends(jwt_bearer.get_user_id)
+    user_id: int = Depends(jwt_bearer.get_user_id),
+    background_tasks: BackgroundTasks
 ):
     try:
-        expense, code = await database.expense_service.post(session, data=expense,
+        expense_response, code = await database.expense_service.post(session, data=expense,
                                                             headers={'user-id': str(user_id)})
+        background_tasks.add_task(calcule_expenses, session, id=expense.category_id, headers={'user-id': str(user_id)})
     except ClientConnectorError:
         raise HTTPException(
             status_code=503,
@@ -32,7 +35,7 @@ async def create_expense(
             detail='Service error.',
             headers={'WWW-Authenticate': 'Bearer'},
         )
-    return JSONResponse(content=expense, status_code=code)
+    return JSONResponse(content=expense_response, status_code=code)
 
 
 @router.get('/{id}')

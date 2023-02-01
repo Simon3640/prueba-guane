@@ -1,5 +1,5 @@
-from app.domain.models import IncomeCategory
-from app.domain.schemas import IncomeCategoryCreate, IncomeCategoryUpdate
+from app.ABC.models import IncomeCategory
+from app.schemas import IncomeCategoryCreate, IncomeCategoryUpdate
 from .base import Base
 
 class IncomeCategoryRules(Base[IncomeCategory, IncomeCategoryCreate, IncomeCategoryUpdate]):

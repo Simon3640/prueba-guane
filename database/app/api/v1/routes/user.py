@@ -1,11 +1,11 @@
 from fastapi import APIRouter, Depends, HTTPException, Header
 from tortoise.backends.base.client import BaseDBAsyncClient
 
-from app.domain.schemas import UserCreate, UserUpdate, UserResponse, Msg
-from app.domain.models import User
-from app.domain.errors.base import BaseErrors
-from app.api.middlewares import db, user
-from app.services import crud
+from app.schemas import UserCreate, UserUpdate, UserResponse, Msg
+from app.ABC.models import User
+from app.helpers.loads.errors.base import BaseErrors
+from app.api.middlewares import user
+from app.services import user_service
 from app.core.logging import get_logging
 
 router = APIRouter()
@@ -14,12 +14,10 @@ log = get_logging(__name__)
 
 @router.post('/', response_model=UserResponse)
 async def create_user(
-    user: UserCreate,
-    *,
-    db: BaseDBAsyncClient = Depends(db.get_db)
+    user: UserCreate
 ) -> UserResponse:
     try:
-        user = await crud.user.create(db, obj_in=user)
+        user = await user_service.create(obj_in=user)
     except BaseErrors as e:
         raise HTTPException(e.code, e.detail)
     return user
@@ -28,7 +26,6 @@ async def create_user(
 @router.get('/', response_model=list[UserResponse])
 async def get_users(
     *,
-    db: BaseDBAsyncClient = Depends(db.get_db),
     user_id: int = Header(),
     current_user: User = Depends(user.get_current_user),
     skip: int = 0,
@@ -37,7 +34,7 @@ async def get_users(
 ) -> list[UserResponse]:
     log.debug(current_user.__dict__)
     try:
-        users = await crud.user.get_multi(db, current_user, skip=skip, limit=limit, active=active)
+        users = await user_service.get_multi(current_user, skip=skip, limit=limit, active=active)
     except BaseErrors as e:
         raise HTTPException(e.code, e.detail)
     return users
@@ -47,12 +44,11 @@ async def get_users(
 async def get_user(
     id: int,
     *,
-    db: BaseDBAsyncClient = Depends(db.get_db),
     user_id: int = Header(),
     current_user: User = Depends(user.get_current_user),
 ) -> UserResponse:
     try:
-        user = await crud.user.get(db, current_user, id=id)
+        user = await user_service.get(current_user, id=id)
     except BaseErrors as e:
         raise HTTPException(e.code, e.detail)
     return user
@@ -63,14 +59,11 @@ async def update_user(
     user: UserUpdate,
     id: int,
     *,
-    db: BaseDBAsyncClient = Depends(db.get_db),
     user_id: int = Header(),
     current_user: User = Depends(user.get_current_user),
 ) -> UserResponse:
     try:
-        db_obj = await crud.user.get(db, current_user, id=id)
-        user_updated = await crud.user.update(db, current_user, obj_in=user, db_obj=db_obj)
-        log.debug(user_updated)
+        user_updated = await user_service.update(current_user, obj_in=user, id=id)
     except BaseErrors as e:
         raise HTTPException(e.code, e.detail)
     return user_updated
@@ -80,12 +73,11 @@ async def update_user(
 async def delete_user(
     id: int,
     *,
-    db: BaseDBAsyncClient = Depends(db.get_db),
     user_id: int = Header(),
     current_user: User = Depends(user.get_current_user),
 ) -> Msg:
     try:
-        user = await crud.user.delete(db, current_user, id=id)
+        user = await user_service.delete(current_user, id=id)
     except BaseErrors as e:
         raise HTTPException(e.code, e.detail)
     return {'msg': 'Usuario eliminado con éxito'}

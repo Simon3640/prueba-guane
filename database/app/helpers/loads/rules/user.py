@@ -1,11 +1,14 @@
-from app.domain.models import User
-from app.domain.errors.user import *
-from app.domain.schemas import UserUpdate, UserCreate
+from app.ABC.models import User
+from ..errors.user import *
+from app.schemas import UserUpdate, UserCreate
 from .base import Base
 
 
 # We create the rules for handle users
 class UserRules(Base[User, UserCreate, UserUpdate]):
+    def __init__(self):
+        ...
+
     def get(self, *, who: User, to: User) -> None:
         if not to:
             raise user_404

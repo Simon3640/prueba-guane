@@ -1,7 +1,7 @@
-from app.domain.models import Income, User
-from app.domain.errors.income import *
-from app.domain.schemas import IncomeCreate, IncomeUpdate
+from app.ABC.models import Income, User
+from app.schemas import IncomeCreate, IncomeUpdate
 from .base import Base
+from ..errors.income import *
 
 
 class IncomeRules(Base[Income, IncomeCreate, IncomeUpdate]):
@@ -11,4 +11,6 @@ class IncomeRules(Base[Income, IncomeCreate, IncomeUpdate]):
         if not (who.is_superuser) and not (to.category.user_id == who.id):
             raise income_401
         return None
-    
+
+    def delete(self, *, who: User, to: Income) -> None:
+        return self.get(who=who, to=to)

@@ -1,9 +1,8 @@
-from fastapi import APIRouter, Depends, HTTPException
-from tortoise.backends.base.client import BaseDBAsyncClient
+from fastapi import APIRouter, HTTPException
 
-from app.domain.schemas import UserResponse, UserLogin
-from app.domain.errors.base import BaseErrors
-from app.services import crud
+from app.schemas import UserResponse, UserLogin
+from app.helpers.loads.errors.base import BaseErrors
+from app.services import user_service
 from app.api.middlewares import db
 
 router = APIRouter()
@@ -12,12 +11,9 @@ router = APIRouter()
 @router.post('/', response_model=UserResponse)
 async def authenticate(
     user_login: UserLogin,
-    *,
-    db: BaseDBAsyncClient = Depends(db.get_db)
 ) -> UserResponse:
     try:
-        user = await crud.user.authenticate(
-            db, username=user_login.username, password=user_login.password)
+        user = await user_service.authenticate(username=user_login.username, password=user_login.password)
     except BaseErrors as e:
         raise HTTPException(e.code, e.detail)
     return user

@@ -12,7 +12,7 @@ def get_tortoise_config() -> dict:
         'connections': settings.postgres_uri,
         'apps': {
             'models': {
-                'models': ['app.domain.models'],
+                'models': ['app.infra.postgres.models'],
                 'default_connection': 'default',
             }
         }
@@ -25,7 +25,7 @@ def register_db(app: FastAPI, db_url: str = None):
     register_tortoise(
         app,
         db_url=db_url,
-        modules={'models': ['app.domain.models']},
+        modules={'models': ['app.infra.postgres.models']},
         generate_schemas=True,
         add_exception_handlers=True,
     )

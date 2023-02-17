@@ -19,11 +19,7 @@ class ServiceBase(Generic[ModelType, CreateSchemaType, UpdateSchemaType, CrudTyp
         return await self.crud.get(who, id=id)
 
     async def get_multi(
-        self,
-        who: User,
-        *,
-        skip: int = 0,
-        limit: int = 100
+        self, who: User, *, skip: int = 0, limit: int = 100
     ) -> list[ModelType]:
         return await self.crud.get_multi(who, skip=skip, limit=limit)
 
@@ -31,18 +27,9 @@ class ServiceBase(Generic[ModelType, CreateSchemaType, UpdateSchemaType, CrudTyp
         return await self.crud.create(who, obj_in=obj_in)
 
     async def update(
-        self,
-        who: User,
-        *,
-        obj_in: UpdateSchemaType | dict,
-        id: int
+        self, who: User, *, obj_in: UpdateSchemaType | dict, id: int
     ) -> ModelType:
         return await self.crud.update(who, obj_in=obj_in, id=id)
-    
-    async def delete(
-        self,
-        who: User,
-        *,
-        id: int
-    ) -> bool:
+
+    async def delete(self, who: User, *, id: int) -> bool:
         return await self.crud.delete(who, id=id)

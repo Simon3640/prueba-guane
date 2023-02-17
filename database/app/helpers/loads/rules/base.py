@@ -22,11 +22,7 @@ class Base(Generic[ModelType, CreateSchemaType, UpdateSchemaType]):
         pass
 
     def update(
-        self,
-        *,
-        who: User,
-        to: ModelType,
-        obj_in: UpdateSchemaType | dict[str, Any]
+        self, *, who: User, to: ModelType, obj_in: UpdateSchemaType | dict[str, Any]
     ) -> None:
         pass
 

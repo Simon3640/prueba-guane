@@ -8,7 +8,7 @@ class Expense(Protocol):
     @property
     def category(self) -> ExpenseCategory:
         ...
-    
+
     @property
     def name(self) -> str:
         ...

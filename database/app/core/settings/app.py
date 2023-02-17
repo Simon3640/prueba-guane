@@ -52,10 +52,10 @@ class AppSettings(BaseAppSettings):
     def validate_database_uri(cls, v: Optional[str], values: Dict[str, Any]) -> Any:
         return PostgresDsn.build(
             scheme="postgres",
-            user=values.get('postgres_user'),
-            password=values.get('postgres_password'),
-            host=values.get('postgres_server'),
-            path=f"/{values.get('postgres_db')}"
+            user=values.get("postgres_user"),
+            password=values.get("postgres_password"),
+            host=values.get("postgres_server"),
+            path=f"/{values.get('postgres_db')}",
         )
 
     # Loggin
@@ -64,7 +64,7 @@ class AppSettings(BaseAppSettings):
 
     class Config:
         validate_assignment = True
-        env_file_encoding = 'utf-8'
+        env_file_encoding = "utf-8"
 
     # El decorador property simplemente nos devolverá un diccionario con los datos de nuestra aplicación
     @property

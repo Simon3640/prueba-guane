@@ -12,7 +12,7 @@ class ExpenseCategoryBase(BaseModel):
 
 
 class ExpenseCategoryCreateBase(ExpenseCategoryBase):
-    @validator('name')
+    @validator("name")
     def convert_upper(cls, v, values):
         return v.upper()
 

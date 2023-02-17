@@ -11,7 +11,7 @@ class IncomeCategoryBase(BaseModel):
 
 
 class IncomeCategoryCreateBase(IncomeCategoryBase):
-    @validator('name')
+    @validator("name")
     def convert_upper(cls, v, values):
         return v.upper()
 

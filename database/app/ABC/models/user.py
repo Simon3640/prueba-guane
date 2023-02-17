@@ -19,11 +19,11 @@ class User(Base, BaseCreatedUpdatedAtModel, Protocol):
     @property
     def last_names(self) -> str:
         ...
-    
+
     @property
     def is_superuser(self) -> bool:
         ...
-    
+
     @property
     def is_active(self) -> bool:
         ...

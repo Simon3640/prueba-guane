@@ -32,8 +32,9 @@ class UserRules(Base[User, UserCreate, UserUpdate]):
             raise user_registered
 
     # This rule handle update password, maybe it will be removed
-    def update_password(self, *, who: User, to: User,
-                        password: str, confirmpassword: str) -> None:
+    def update_password(
+        self, *, who: User, to: User, password: str, confirmpassword: str
+    ) -> None:
         if not (who.is_superuser) and not (who.id == to.id):
             raise user_401
         if not password == confirmpassword:

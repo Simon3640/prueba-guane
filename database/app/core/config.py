@@ -4,12 +4,16 @@ from typing import Type, Dict
 
 from app.core.settings.app import AppSettings
 from app.core.settings.base import AppEnv, BaseAppSettings
-from app.core.settings import DevelopmentAppSettings, ProductionAppSettings, TestingAppSettings
+from app.core.settings import (
+    DevelopmentAppSettings,
+    ProductionAppSettings,
+    TestingAppSettings,
+)
 
 environments: Dict[AppEnv, Type[AppSettings]] = {
     AppEnv.Development: DevelopmentAppSettings,
     AppEnv.Production: ProductionAppSettings,
-    AppEnv.Testing: TestingAppSettings
+    AppEnv.Testing: TestingAppSettings,
 }
 
 

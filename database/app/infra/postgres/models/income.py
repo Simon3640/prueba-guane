@@ -1,5 +1,4 @@
-from tortoise.fields import (CharField,
-                             FloatField, DatetimeField, ForeignKeyRelation)
+from tortoise.fields import CharField, FloatField, DatetimeField, ForeignKeyRelation
 
 from .base import BaseCreatedUpdatedAtModel, Base
 from .income_category import IncomeCategory
@@ -10,4 +9,5 @@ class Income(Base, BaseCreatedUpdatedAtModel):
     value = FloatField(null=False)
 
     category: ForeignKeyRelation[IncomeCategory] = ForeignKeyRelation(
-        'models.IncomeCategory', related_name='incomes', to_field='id')
+        "models.IncomeCategory", related_name="incomes", to_field="id"
+    )

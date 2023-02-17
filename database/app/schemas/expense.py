@@ -1,4 +1,5 @@
 from datetime import datetime
+from typing import Any
 
 from pydantic import BaseModel, Field, validator
 
@@ -9,13 +10,16 @@ class ExpenseBase(BaseModel):
     payment_date: datetime
     category_id: int
 
+
 class ExpenseCreate(ExpenseBase):
-    @validator('name')
+    @validator("name")
     def convert_upper(cls, v, values):
         return v.upper()
 
+
 class ExpenseUpdate(ExpenseCreate):
     pass
+
 
 class ExpenseInDB(ExpenseBase):
     id: int
@@ -23,4 +27,4 @@ class ExpenseInDB(ExpenseBase):
     updated_at: datetime
 
     class Config:
-        orm_mode=True
+        orm_mode = True

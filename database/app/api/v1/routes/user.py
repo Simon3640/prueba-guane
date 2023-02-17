@@ -12,10 +12,8 @@ router = APIRouter()
 log = get_logging(__name__)
 
 
-@router.post('/', response_model=UserResponse)
-async def create_user(
-    user: UserCreate
-) -> UserResponse:
+@router.post("/", response_model=UserResponse)
+async def create_user(user: UserCreate) -> UserResponse:
     try:
         user = await user_service.create(obj_in=user)
     except BaseErrors as e:
@@ -23,24 +21,26 @@ async def create_user(
     return user
 
 
-@router.get('/', response_model=list[UserResponse])
+@router.get("/", response_model=list[UserResponse])
 async def get_users(
     *,
     user_id: int = Header(),
     current_user: User = Depends(user.get_current_user),
     skip: int = 0,
     limit: int = 100,
-    active: bool | None = True
+    active: bool | None = True,
 ) -> list[UserResponse]:
     log.debug(current_user.__dict__)
     try:
-        users = await user_service.get_multi(current_user, skip=skip, limit=limit, active=active)
+        users = await user_service.get_multi(
+            current_user, skip=skip, limit=limit, active=active
+        )
     except BaseErrors as e:
         raise HTTPException(e.code, e.detail)
     return users
 
 
-@router.get('/{id}', response_model=UserResponse)
+@router.get("/{id}", response_model=UserResponse)
 async def get_user(
     id: int,
     *,
@@ -54,7 +54,7 @@ async def get_user(
     return user
 
 
-@router.put('/{id}', response_model=UserResponse)
+@router.put("/{id}", response_model=UserResponse)
 async def update_user(
     user: UserUpdate,
     id: int,
@@ -69,7 +69,7 @@ async def update_user(
     return user_updated
 
 
-@router.delete('/{id}', response_model=Msg)
+@router.delete("/{id}", response_model=Msg)
 async def delete_user(
     id: int,
     *,
@@ -80,4 +80,4 @@ async def delete_user(
         user = await user_service.delete(current_user, id=id)
     except BaseErrors as e:
         raise HTTPException(e.code, e.detail)
-    return {'msg': 'Usuario eliminado con éxito'}
+    return {"msg": "Usuario eliminado con éxito"}

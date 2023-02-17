@@ -4,6 +4,7 @@ from .base import BaseErrors
 class UserErrors(BaseErrors):
     pass
 
+
 income_400 = UserErrors(400, "Bad request")
 
 income_401 = UserErrors(401, "No autorizado")

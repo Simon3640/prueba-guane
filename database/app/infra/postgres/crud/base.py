@@ -6,7 +6,7 @@ from app.schemas.general import ModelType, CreateSchemaType, UpdateSchemaType
 from app.ABC.rules import ABCRule
 from app.ABC.models import User
 
-RuleType = TypeVar('RuleType', bound=ABCRule)
+RuleType = TypeVar("RuleType", bound=ABCRule)
 
 
 class CRUDBase(Generic[ModelType, CreateSchemaType, UpdateSchemaType, RuleType]):
@@ -24,34 +24,21 @@ class CRUDBase(Generic[ModelType, CreateSchemaType, UpdateSchemaType, RuleType])
             return obj_db
 
     async def get_multi(
-        self,
-        who: User,
-        *,
-        skip: int = 0,
-        limit: int = 100
+        self, who: User, *, skip: int = 0, limit: int = 100
     ) -> list[ModelType]:
         async with in_transaction() as db:
             objs_db = await self.model.all(using_db=db).offset(skip).limit(limit).all()
             self.rules.get_multi(who=who)
             return objs_db
 
-    async def create(
-        self,
-        who: User,
-        *,
-        obj_in: CreateSchemaType
-    ) -> ModelType:
+    async def create(self, who: User, *, obj_in: CreateSchemaType) -> ModelType:
         async with in_transaction() as db:
             self.rules.create(who=who, to=obj_in)
             db_obj = await self.model.create(using_db=db, **obj_in.dict())
             return db_obj
 
     async def update(
-        self,
-        who: User,
-        *,
-        obj_in: UpdateSchemaType | dict,
-        id: int
+        self, who: User, *, obj_in: UpdateSchemaType | dict, id: int
     ) -> ModelType:
         async with in_transaction() as db:
             db_obj = self.get(who, id=id)
@@ -60,8 +47,7 @@ class CRUDBase(Generic[ModelType, CreateSchemaType, UpdateSchemaType, RuleType])
                 update_data = obj_in
             else:
                 update_data = obj_in.dict(exclude_unset=True)
-            await self.model.filter(id=id).using_db(
-                _db=db).update(**update_data)
+            await self.model.filter(id=id).using_db(_db=db).update(**update_data)
             db_obj = await self.model.get(id=id)
             return db_obj
 

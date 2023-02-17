@@ -7,6 +7,7 @@ class Base(Protocol):
     def id(self) -> int:
         ...
 
+
 class BaseCreatedUpdatedAtModel(Protocol):
     @property
     def created_at(self) -> datetime:

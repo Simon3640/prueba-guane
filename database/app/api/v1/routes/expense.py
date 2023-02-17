@@ -10,12 +10,12 @@ from app.api.middlewares import user
 router = APIRouter()
 
 
-@router.post('/', response_model=ExpenseInDB)
+@router.post("/", response_model=ExpenseInDB)
 async def create_expense(
     expense: ExpenseCreate,
     *,
     user_id: int = Header(),
-    current_user: User = Depends(user.get_current_user)
+    current_user: User = Depends(user.get_current_user),
 ) -> ExpenseInDB:
     try:
         expense = await expense_service.create(current_user, obj_in=expense)
@@ -24,7 +24,7 @@ async def create_expense(
     return expense
 
 
-@router.get('/', response_model=list[ExpenseInDB])
+@router.get("/", response_model=list[ExpenseInDB])
 async def get_expenses(
     *,
     user_id: int = Header(),
@@ -39,7 +39,7 @@ async def get_expenses(
     return expenses
 
 
-@router.get('/{id}', response_model=ExpenseInDB)
+@router.get("/{id}", response_model=ExpenseInDB)
 async def get_expense(
     id: int,
     *,
@@ -53,7 +53,7 @@ async def get_expense(
     return expense
 
 
-@router.put('/{id}', response_model=ExpenseInDB)
+@router.put("/{id}", response_model=ExpenseInDB)
 async def update_expense(
     id: int,
     expense: ExpenseUpdate,
@@ -68,7 +68,7 @@ async def update_expense(
     return expense
 
 
-@router.delete('/{id}', response_model=Msg)
+@router.delete("/{id}", response_model=Msg)
 async def delete_expense(
     id: int,
     *,
@@ -79,4 +79,4 @@ async def delete_expense(
         expense = await expense_service.delete(current_user, id=id)
     except BaseErrors as e:
         raise HTTPException(e.detail, e.code)
-    return {'msg': 'El gasto ha sido eliminado'}
+    return {"msg": "El gasto ha sido eliminado"}

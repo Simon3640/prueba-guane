@@ -8,13 +8,16 @@ class IncomeBase(BaseModel):
     value: float = Field(lt=2**1023 * (2**53 - 1) / 2**52)
     category_id: int
 
+
 class IncomeCreate(IncomeBase):
-    @validator('name')
+    @validator("name")
     def convert_upper(cls, v, values):
         return v.upper()
 
+
 class IncomeUpdate(IncomeCreate):
     pass
+
 
 class IncomeInDB(IncomeBase):
     id: int
@@ -22,4 +25,4 @@ class IncomeInDB(IncomeBase):
     updated_at: datetime
 
     class Config:
-        orm_mode=True
+        orm_mode = True

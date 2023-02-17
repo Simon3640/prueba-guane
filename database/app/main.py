@@ -13,12 +13,11 @@ def run_app():
     register_db(app=application)
     application.add_middleware(
         CORSMiddleware,
-        allow_origins=[str(origin)
-                       for origin in settings.backend_cors_origins],
+        allow_origins=[str(origin) for origin in settings.backend_cors_origins],
         allow_methods=["*"],
         allow_credentials=True,
         allow_headers=["*"],
-        expose_headers=["*"]
+        expose_headers=["*"],
     )
     application.include_router(api_route, prefix=settings.api_prefix_v1)
     setloggingdb()

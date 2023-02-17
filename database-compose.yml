@@ -45,3 +45,10 @@ services:
       - ./database:/app
     ports:
       - 8000:${DATABASE_PORT}
+  
+  pgadmin:
+    image: dpage/pgadmin4
+    env_file:
+      - .env
+    ports:
+      - 80:80

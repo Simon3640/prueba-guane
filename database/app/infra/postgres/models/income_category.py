@@ -13,5 +13,6 @@ class IncomeCategory(Base, BaseCreatedUpdatedAtModel):
     name = CharField(max_length=50, null=False)
 
     user: ForeignKeyRelation[User] = ForeignKeyRelation(
-        'models.User', related_name='income_categories', to_field='id')
+        "models.User", related_name="income_categories", to_field="id"
+    )
     incomes: ReverseRelation["Income"]

@@ -10,12 +10,12 @@ from app.api.middlewares import user
 router = APIRouter()
 
 
-@router.post('/', response_model=IncomeInDB)
+@router.post("/", response_model=IncomeInDB)
 async def create_Income(
     income: IncomeCreate,
     *,
     user_id: int = Header(),
-    current_user: User = Depends(user.get_current_user)
+    current_user: User = Depends(user.get_current_user),
 ) -> IncomeInDB:
     try:
         income = await income_service.create(current_user, obj_in=income)
@@ -24,7 +24,7 @@ async def create_Income(
     return income
 
 
-@router.get('/', response_model=list[IncomeInDB])
+@router.get("/", response_model=list[IncomeInDB])
 async def get_Incomes(
     *,
     user_id: int = Header(),
@@ -39,7 +39,7 @@ async def get_Incomes(
     return incomes
 
 
-@router.get('/{id}', response_model=IncomeInDB)
+@router.get("/{id}", response_model=IncomeInDB)
 async def get_Income(
     id: int,
     *,
@@ -53,7 +53,7 @@ async def get_Income(
     return income
 
 
-@router.put('/{id}', response_model=IncomeInDB)
+@router.put("/{id}", response_model=IncomeInDB)
 async def update_Income(
     id: int,
     income: IncomeUpdate,
@@ -68,7 +68,7 @@ async def update_Income(
     return income
 
 
-@router.delete('/{id}', response_model=Msg)
+@router.delete("/{id}", response_model=Msg)
 async def delete_Income(
     id: int,
     *,
@@ -79,4 +79,4 @@ async def delete_Income(
         income = await income_service.delete(current_user, id=id)
     except BaseErrors as e:
         raise HTTPException(e.detail, e.code)
-    return {'msg': 'El gasto ha sido eliminado'}
+    return {"msg": "El gasto ha sido eliminado"}

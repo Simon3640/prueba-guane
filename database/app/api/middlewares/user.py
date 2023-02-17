@@ -8,7 +8,7 @@ log = get_logging(__name__)
 
 
 async def get_current_user(request: Request) -> User:
-    user_id = request.headers['user-id']
+    user_id = request.headers["user-id"]
     if user_id is None:
-        raise HTTPException(403, 'No se pudieron validar tus credenciales')
+        raise HTTPException(403, "No se pudieron validar tus credenciales")
     return await user_service.get_middleware(user_id)

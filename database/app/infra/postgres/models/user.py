@@ -4,7 +4,6 @@ from .base import BaseCreatedUpdatedAtModel, Base
 
 
 class User(Base, BaseCreatedUpdatedAtModel):
-
     username = CharField(max_length=20, unique=True, null=False)
     email = CharField(max_length=255, unique=True, null=False)
     names = CharField(max_length=50, null=False)

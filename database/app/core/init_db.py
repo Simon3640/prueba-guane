@@ -9,13 +9,13 @@ settings = get_app_settings()
 
 def get_tortoise_config() -> dict:
     config = {
-        'connections': settings.postgres_uri,
-        'apps': {
-            'models': {
-                'models': ['app.infra.postgres.models'],
-                'default_connection': 'default',
+        "connections": settings.postgres_uri,
+        "apps": {
+            "models": {
+                "models": ["app.infra.postgres.models"],
+                "default_connection": "default",
             }
-        }
+        },
     }
     return config
 
@@ -25,7 +25,7 @@ def register_db(app: FastAPI, db_url: str = None):
     register_tortoise(
         app,
         db_url=db_url,
-        modules={'models': ['app.infra.postgres.models']},
+        modules={"models": ["app.infra.postgres.models"]},
         generate_schemas=True,
         add_exception_handlers=True,
     )

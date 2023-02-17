@@ -14,5 +14,6 @@ class ExpenseCategory(Base, BaseCreatedUpdatedAtModel):
     budget = FloatField(null=True)
 
     user: ForeignKeyRelation[User] = ForeignKeyRelation(
-        'models.User', related_name='expense_categories', to_field='id')
+        "models.User", related_name="expense_categories", to_field="id"
+    )
     expenses: ReverseRelation["Expense"]

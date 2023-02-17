@@ -2,6 +2,7 @@ from typing import Protocol, Type
 
 from .models.user import User
 
+
 class Object(Protocol):
     @property
     def id(self) -> int:
@@ -25,15 +26,9 @@ class ABCRule(Protocol):
 
     def create(self, *, who: User, to: Type[Object]) -> None:
         """Rule to create a object in db"""
-    
-    def update(
-        self,
-        *,
-        who: User,
-        to: Type[Object],
-        obj_in: Type[Object]
-    ) -> None:
+
+    def update(self, *, who: User, to: Type[Object], obj_in: Type[Object]) -> None:
         """Rule to update a object from db"""
-    
+
     def delete(self, *, who: User, to: Type[Object]) -> None:
         """Rule to delete a object in db"""
